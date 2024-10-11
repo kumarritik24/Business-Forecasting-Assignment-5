@@ -1,0 +1,71 @@
+---
+title: "Assignment_5"
+author: "Ritik Kumar"
+date: "2024-10-10"
+output: html_document
+---
+
+## Decomposition 
+
+```{r}
+library(forecast)
+library(ggplot2)
+library(readxl)
+library(fpp)
+library(fpp2)
+
+#Import the dataset
+data<- read_excel("C:/Users/malho/Downloads/TotalQuestions_Stack_Overflow.xlsx")
+print(head(data))
+
+#Forcasting of SQL questions by using Stack Overflow Dataset
+# Convert 'Month' to Date format and set it as index
+data$Month <- as.Date(data$Month)
+data_ts <- ts(data$SQL, start=c(2008,9), frequency=12)
+
+# Plot the original time series data of SQL Question from 2008-2022
+plot(data_ts, main="SQL Questions Over Time", xlab="Time", ylab="Number of Questions")
+
+
+#Takes 2 Arguments
+stl_decomp <- stl(data_ts,s.window="periodic")
+
+#Table View
+stl_decomp
+
+#Graph View 
+plot(stl_decomp)
+
+# What else comes with stl object
+attributes(stl_decomp)
+
+# Lets print out a seasonal adjustment
+seasadj(stl_decomp)
+
+# Plot a line on the graph
+plot(data_ts)
+lines(seasadj(stl_decomp), col='red')
+
+# Default period forecast
+f_stl<- forecast(stl_decomp)
+
+# you can pass the # of period
+f_stl<- forecast(stl_decomp,h=15)
+
+#Print it out or graph it
+f_stl
+plot(f_stl)
+
+# There is more than one way to do things
+decomp_data<- decompose(data_ts)
+
+# Each one shows different attributes 
+attributes(decomp_data)
+seasadj(decomp_data)
+
+
+
+
+
+```
+
